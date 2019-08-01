@@ -125,6 +125,11 @@ func resizer(buf []byte, o Options) ([]byte, error) {
 		return nil, err
 	}
 
+	image, err = alterBrightnessContrast(image, o)
+	if err != nil {
+		return nil, err
+	}
+
 	return saveImage(image, o)
 }
 
@@ -570,4 +575,17 @@ func getAngle(angle Angle) Angle {
 		angle = angle - divisor
 	}
 	return Angle(math.Min(float64(angle), 270))
+}
+
+func alterBrightnessContrast(image *C.VipsImage, o Options) (*C.VipsImage, error) {
+	var err error
+
+	if o.BcBrightness != 0 || o.BcContrast != 0 {
+		image, err = vipsBrightnessContrast(image, o.BcBrightness, o.BcContrast)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return image, nil
 }

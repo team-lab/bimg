@@ -703,3 +703,14 @@ func vipsDrawWatermark(image *C.VipsImage, o WatermarkImage) (*C.VipsImage, erro
 
 	return out, nil
 }
+
+func vipsBrightnessContrast(image *C.VipsImage, brightness float64, contrast float64) (*C.VipsImage, error) {
+	var out *C.VipsImage
+	defer C.g_object_unref(C.gpointer(image))
+
+	err := C.vips_brightnesscontrast_bridge(image, &out, C.double(brightness), C.double(contrast))
+	if err != 0 {
+		return nil, catchVipsError()
+	}
+	return out, nil
+}
