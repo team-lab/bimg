@@ -550,3 +550,17 @@ func assertSize(buf []byte, width, height int) error {
 	}
 	return nil
 }
+
+func TestImageModulation(t *testing.T) {
+	buf, err := Read("./testdata/northern_cardinal_bird.jpg")
+	if err != nil {
+		t.Errorf("Cannot process the image: %#v", err)
+	}
+
+	buf, err = NewImage(buf).ModulateImage(50, 0, 0)
+	if err != nil {
+		t.Errorf("ModulateImage failed")
+	}
+
+	Write("testdata/northern_cardinal_bird_modulation.png", buf)
+}

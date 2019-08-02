@@ -185,6 +185,12 @@ func (i *Image) Trim() ([]byte, error) {
 	return i.Process(options)
 }
 
+// ModulateImage changes brightness and contrast of the given image.
+func (i *Image) ModulateImage(brightness float64, saturation float64, hue float64) ([]byte, error) {
+	options := Options{BshBrightness: brightness, BshSaturation: saturation, BshHue: hue}
+	return i.Process(options)
+}
+
 // Process processes the image based on the given transformation options,
 // talking with libvips bindings accordingly and returning the resultant
 // image buffer.
