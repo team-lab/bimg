@@ -597,3 +597,9 @@ int vips_gamma_bridge(VipsImage *in, VipsImage **out, double exponent)
 {
   return vips_gamma(in, out, "exponent", 1.0 / exponent, NULL);
 }
+
+int vips_autolevel_bridge(VipsImage *in, VipsImage **out)
+{
+  return vips_scale(in, out, NULL);
+}
+
