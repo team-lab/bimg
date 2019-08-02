@@ -602,4 +602,3 @@ int vips_autolevel_bridge(VipsImage *in, VipsImage **out)
 {
   return vips_scale(in, out, NULL);
 }
-
