@@ -224,6 +224,8 @@ type Options struct {
 	Sharpen        Sharpen
 	Threshold      float64
 	Gamma          float64
+	BcBrightness   float64
+	BcContrast     float64
 	BshBrightness  float64
 	BshSaturation  float64
 	BshHue         float64
