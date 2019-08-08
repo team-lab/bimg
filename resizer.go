@@ -22,7 +22,14 @@ var (
 func resizer(buf []byte, o Options) ([]byte, error) {
 	defer C.vips_thread_shutdown()
 
-	image, imageType, err := loadImage(buf)
+	var image *C.VipsImage
+	var imageType ImageType
+	var err error
+	if shouldReadSpecificImage(o) {
+		image, imageType, err = loadSpecificImage(buf, o)
+	} else {
+		image, imageType, err = loadImage(buf)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -166,6 +173,19 @@ func loadImage(buf []byte) (*C.VipsImage, ImageType, error) {
 	return image, imageType, nil
 }
 
+func loadSpecificImage(buf []byte, o Options) (*C.VipsImage, ImageType, error) {
+	if len(buf) == 0 {
+		return nil, JPEG, errors.New("Image buffer is empty")
+	}
+
+	image, imageType, err := vipsReadSpecificImage(buf, o.PageNumber - 1)
+	if err != nil {
+		return nil, JPEG, err
+	}
+
+	return image, imageType, nil
+}
+
 func applyDefaults(o Options, imageType ImageType) Options {
 	if o.Quality == 0 {
 		o.Quality = Quality
@@ -213,6 +233,10 @@ func shouldTransformImage(o Options, inWidth, inHeight int) bool {
 func shouldApplyEffects(o Options) bool {
 	return o.GaussianBlur.Sigma > 0 || o.GaussianBlur.MinAmpl > 0 || o.Sharpen.Radius > 0 && o.Sharpen.Y2 > 0 || o.Sharpen.Y3 > 0
 }
+
+	func shouldReadSpecificImage(o Options) bool {
+		return o.PageNumber > 1
+	}
 
 func transformImage(image *C.VipsImage, o Options, shrink int, residual float64) (*C.VipsImage, error) {
 	var err error
@@ -641,4 +665,27 @@ func applyModulation(image *C.VipsImage, o Options) (*C.VipsImage, error) {
 		}
 	}
 	return image, nil
+}
+
+func JoinImages(left []byte, right []byte) ([]byte, error) {
+	defer C.vips_thread_shutdown()
+
+	leftImg, imageType, err := loadImage(left)
+	if err != nil {
+		return nil, err
+	}
+
+	rightImg, _, err := loadImage(right)
+	if err != nil {
+		return nil, err
+	}
+
+	image, err := vipsJoinImages(leftImg, rightImg)
+	if err != nil {
+		return nil, err
+	}
+
+	o := applyDefaults(Options{}, imageType)
+
+	return saveImage(image, o)
 }
