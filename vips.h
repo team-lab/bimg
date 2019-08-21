@@ -372,12 +372,12 @@ vips_heifsave_bridge(VipsImage *in, void **buf, size_t *len, int strip, int qual
 }
 
 int
-vips_jp2save_bridge(VipsImage *in, void **buf, size_t *len, int quality)
+vips_jp2save_bridge(VipsImage *in, void **buf, size_t *len)
 {
   #if (VIPS_MAJOR_VERSION >= 8 && VIPS_MINOR_VERSION >= 8)
     return vips_magicksave_buffer(in, buf, len, 
-		"quality", quality,
-		"format", "jp2", 
+		"quality", 43,
+		"format", "jp2",
 		NULL
 	);
   #else
