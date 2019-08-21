@@ -345,10 +345,16 @@ vips_tiffsave_bridge(VipsImage *in, void **buf, size_t *len) {
 }
 
 int
-vips_jp2save_bridge(VipsImage *in, void **buf, size_t *len)
+vips_jp2save_bridge(VipsImage *in, void **buf, size_t *len, int strip, int quality, int lossless)
 {
   #if (VIPS_MAJOR_VERSION >= 8 && VIPS_MINOR_VERSION >= 8)
-    return vips_magicksave_buffer(in, buf, len, "format", "jp2", NULL);
+    return vips_magicksave_buffer(in, buf, len, 
+		"strip", INT_TO_GBOOLEAN(strip),
+		"Q", quality,
+		"lossless", INT_TO_GBOOLEAN(lossless),
+		"format", "jp2", 
+		NULL
+	);
   #else
     return 0;
   #endif
