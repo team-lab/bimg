@@ -461,7 +461,7 @@ func vipsSave(image *C.VipsImage, o vipsSaveOptions) ([]byte, error) {
 	case GIF:
 		saveErr = C.vips_gifsave_bridge(tmpImage, &ptr, &length)
 	case JP2:
-		saveErr = C.vips_jp2save_bridge(tmpImage, &ptr, &length, quality)
+		saveErr = C.vips_jp2save_bridge(tmpImage, &ptr, &length)
 	default:
 		saveErr = C.vips_jpegsave_bridge(tmpImage, &ptr, &length, strip, quality, interlace)
 	}
