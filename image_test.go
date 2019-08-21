@@ -88,8 +88,8 @@ func TestImageSvgToJpeg(t *testing.T) {
 
 func TestImageJpegToJp2(t *testing.T) {
 	if VipsMajorVersion >= 8 && VipsMinorVersion > 2 {
-		//i := initImage("test.jpg")
-		i := initImage("vertical.jpg")
+		i := initImage("test.jpg")
+		//i := initImage("vertical.jpg")
 		options := Options{
 			Type: JP2,
 		}
@@ -98,8 +98,8 @@ func TestImageJpegToJp2(t *testing.T) {
 			t.Errorf("Cannot process the image: %#v", err)
 		}
 
-		//Write("testdata/test_jpg.jp2", buf)
-		Write("testdata/vertical_jpg.jp2", buf)
+		Write("testdata/test_jpg.jp2", buf)
+		//Write("testdata/vertical_jpg.jp2", buf)
 	}
 }
 

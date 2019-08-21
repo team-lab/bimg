@@ -349,9 +349,9 @@ vips_jp2save_bridge(VipsImage *in, void **buf, size_t *len, int strip, int quali
 {
   #if (VIPS_MAJOR_VERSION >= 8 && VIPS_MINOR_VERSION >= 8)
     return vips_magicksave_buffer(in, buf, len, 
-		"strip", INT_TO_GBOOLEAN(strip),
-		"Q", quality,
-		"lossless", INT_TO_GBOOLEAN(lossless),
+		//"strip", INT_TO_GBOOLEAN(strip),
+		"quality", quality,
+		//"lossless", INT_TO_GBOOLEAN(lossless),
 		"format", "jp2", 
 		NULL
 	);
