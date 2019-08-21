@@ -91,7 +91,8 @@ func TestImageJpegToJp2(t *testing.T) {
 		i := initImage("test.jpg")
 		//i := initImage("vertical.jpg")
 		options := Options{
-			Type: JP2,
+			Quality: 40,
+			Type:    JP2,
 		}
 		buf, err := i.Process(options)
 		if err != nil {
