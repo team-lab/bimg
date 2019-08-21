@@ -101,6 +101,21 @@ func TestImageJpegToJp2(t *testing.T) {
 	}
 }
 
+func TestImagePdfToJp2(t *testing.T) {
+	if VipsMajorVersion >= 8 && VipsMinorVersion > 2 {
+		i := initImage("test.pdf")
+		options := Options{
+			Type: JP2,
+		}
+		buf, err := i.Process(options)
+		if err != nil {
+			t.Errorf("Cannot process the image: %#v", err)
+		}
+
+		Write("testdata/test_pdf.jp2", buf)
+	}
+}
+
 func TestImageResizeAndCrop(t *testing.T) {
 	buf, err := initImage("test.jpg").ResizeAndCrop(300, 200)
 	if err != nil {
