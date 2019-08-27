@@ -41,6 +41,13 @@ func TestImageSvgResize(t *testing.T) {
 	}
 }
 
+func TestImageJp2Resize(t *testing.T) {
+	_, err := initImage("test.jp2").Resize(300, 240)
+	if err == nil {
+		t.Errorf("JPEG 2000 cannot be saved within VIPS")
+	}
+}
+
 func TestImageGifToJpeg(t *testing.T) {
 	if VipsMajorVersion >= 8 && VipsMinorVersion > 2 {
 		i := initImage("test.gif")

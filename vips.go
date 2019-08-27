@@ -673,6 +673,7 @@ func vipsImageType(buf []byte) ImageType {
 	if IsTypeSupported(MAGICK) && strings.HasSuffix(readImageType(buf), "MagickBuffer") {
 		return MAGICK
 	}
+
 	// NOTE: libheif currently only supports heic sub types; see:
 	//   https://github.com/strukturag/libheif/issues/83#issuecomment-421427091
 	if IsTypeSupported(HEIF) && buf[4] == 0x66 && buf[5] == 0x74 && buf[6] == 0x79 && buf[7] == 0x70 &&
@@ -684,6 +685,11 @@ func vipsImageType(buf []byte) ImageType {
 		buf[8] == 0x6d && buf[9] == 0x69 && buf[10] == 0x66 && buf[11] == 0x31 {
 		// This is a HEIF file
 		return HEIF
+	}
+	if IsTypeSupported(JP2) &&
+		buf[3] == 0x0C && buf[4] == 0x6A && buf[5] == 0x50 && buf[6] == 0x20 && buf[7] == 0x20 &&
+		buf[8] == 0x0D && buf[9] == 0x0A && buf[10] == 0x87 && buf[11] == 0x0A && buf[15] == 0x14 {
+		return JP2
 	}
 
 	return UNKNOWN
