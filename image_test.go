@@ -86,53 +86,17 @@ func TestImageSvgToJpeg(t *testing.T) {
 	}
 }
 
-func TestImageJpegToJp2(t *testing.T) {
-	if VipsMajorVersion >= 8 && VipsMinorVersion > 2 {
-		i := initImage("test.jpg")
-		//i := initImage("myface.jpg")
-		//i := initImage("vertical.jpg")
-		options := Options{
-			Type: JP2,
-		}
-		buf, err := i.Process(options)
-		if err != nil {
-			t.Errorf("Cannot process the image: %#v", err)
-		}
-
-		Write("testdata/test_jpg.jp2", buf)
-		//Write("testdata/myface_jpg_43.jp2", buf)
-		//Write("testdata/vertical_jpg.jp2", buf)
+func TestConvertToJp2(t *testing.T) {
+	i := initImage("test.jpg")
+	options := Options{
+		Type: JP2,
 	}
-}
-
-func TestImagePdfToJp2(t *testing.T) {
-	if VipsMajorVersion >= 8 && VipsMinorVersion > 2 {
-		i := initImage("test.pdf")
-		options := Options{
-			Type: JP2,
-		}
-		buf, err := i.Process(options)
-		if err != nil {
-			t.Errorf("Cannot process the image: %#v", err)
-		}
-
-		Write("testdata/test_pdf.jp2", buf)
+	buf, err := i.Process(options)
+	if err != nil {
+		t.Errorf("Cannot process the image: %#v", err)
 	}
-}
 
-func TestImagePngToJp2(t *testing.T) {
-	if VipsMajorVersion >= 8 && VipsMinorVersion > 2 {
-		i := initImage("transparent.png")
-		options := Options{
-			Type: JP2,
-		}
-		buf, err := i.Process(options)
-		if err != nil {
-			t.Errorf("Cannot process the image: %#v", err)
-		}
-
-		Write("testdata/transparent_png.jp2", buf)
-	}
+	Write("testdata/test_jpg.jp2", buf)
 }
 
 func TestImageResizeAndCrop(t *testing.T) {
