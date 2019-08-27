@@ -665,6 +665,11 @@ func vipsImageType(buf []byte) ImageType {
 	if IsTypeSupported(MAGICK) && strings.HasSuffix(readImageType(buf), "MagickBuffer") {
 		return MAGICK
 	}
+	if IsTypeSupported(JP2) &&
+		buf[3] == 0x0C && buf[4] == 0x6A && buf[5] == 0x50 && buf[6] == 0x20 && buf[7] == 0x20 &&
+		buf[8] == 0x0D && buf[9] == 0x0A && buf[10] == 0x87 && buf[11] == 0x0A && buf[15] == 0x14 {
+		return JP2
+	}
 
 	return UNKNOWN
 }

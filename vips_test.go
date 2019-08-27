@@ -15,6 +15,7 @@ func TestVipsRead(t *testing.T) {
 		{"test.jpg", JPEG},
 		{"test.png", PNG},
 		{"test.webp", WEBP},
+		{"test.jp2", JP2},
 	}
 
 	for _, file := range files {

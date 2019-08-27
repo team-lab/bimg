@@ -404,6 +404,8 @@ vips_init_image (void *buf, size_t len, int imageType, VipsImage **out) {
 #endif
 	} else if (imageType == MAGICK) {
 		code = vips_magickload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
+	} else if (imageType == JP2) {
+		code = vips_magickload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
 #endif
 	}
 
@@ -432,6 +434,8 @@ vips_init_specific_image (void *buf, size_t len, int num, int imageType, VipsIma
 		code = vips_svgload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
 #endif
 	} else if (imageType == MAGICK) {
+		code = vips_magickload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
+	} else if (imageType == JP2) {
 		code = vips_magickload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
 #endif
 	}
