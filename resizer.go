@@ -21,6 +21,7 @@ var (
 // resizer is used to transform a given image as byte buffer
 // with the passed options.
 func resizer(buf []byte, o Options) ([]byte, error) {
+	fmt.Println("Process関数が呼ばれました。")
 	defer C.vips_thread_shutdown()
 
 	var image *C.VipsImage
@@ -94,6 +95,12 @@ func resizer(buf []byte, o Options) ([]byte, error) {
 		residual = float64(shrink) / factor
 	}
 
+	// Apply inverse gamma correction before image processing, if necessary
+	image, err = transformLinearNonLinear(image, o, 0.454545)
+	if err != nil {
+		return nil, err
+	}
+
 	// Zoom image, if necessary
 	image, err = zoomImage(image, o.Zoom)
 	if err != nil {
@@ -154,6 +161,12 @@ func resizer(buf []byte, o Options) ([]byte, error) {
 
 	// Apply modulation, if necessary
 	image, err = applyModulation(image, o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Apply gamma correction after image processing, if necessary
+	image, err = transformLinearNonLinear(image, o, 2.2)
 	if err != nil {
 		return nil, err
 	}
@@ -633,10 +646,20 @@ func getAngle(angle Angle) Angle {
 	return Angle(math.Min(float64(angle), 270))
 }
 
+func transformLinearNonLinear(image *C.VipsImage, o Options, v int) (*C.VipsImage, error) {
+	var err error
+	if o.GammaCorrection {
+		image, err = vipsGamma(image, v)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return image, nil
+}
+
 func applyAutoLevel(image *C.VipsImage, o Options) (*C.VipsImage, error) {
 	var err error
 	if o.AutoLevel {
-		fmt.Println("applyAutoLevel")
 		image, err = vipsAutoLevel(image)
 		if err != nil {
 			return nil, err
