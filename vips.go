@@ -666,8 +666,10 @@ func vipsImageType(buf []byte) ImageType {
 		return MAGICK
 	}
 	if IsTypeSupported(JP2) &&
+		buf[0] == 0x00 && buf[1] == 0x00 && buf[2] == 0x00 &&
 		buf[3] == 0x0C && buf[4] == 0x6A && buf[5] == 0x50 && buf[6] == 0x20 && buf[7] == 0x20 &&
-		buf[8] == 0x0D && buf[9] == 0x0A && buf[10] == 0x87 && buf[11] == 0x0A && buf[15] == 0x14 {
+		buf[8] == 0x0D && buf[9] == 0x0A && buf[10] == 0x87 && buf[11] == 0x0A && buf[15] == 0x14 &&
+		buf[20] == 0x6A && buf[21] == 0x70 && buf[22] == 0x32 && buf[23] == 0x20 {
 		return JP2
 	}
 
