@@ -168,7 +168,6 @@ vips_type_find_bridge(int t) {
 	}
 #endif
 	if (t == JP2) {
-		//return vips_type_find("VipsOperation", "jp2load");
 		return vips_type_find("VipsOperation", "magickload");
 	}
 	return 0;
@@ -194,7 +193,6 @@ vips_type_find_save_bridge(int t) {
 	}
 #endif
 	if (t == JP2) {
-		//return vips_type_find("VipsOperation", "jp2save_buffer");
 		return vips_type_find("VipsOperation", "magicksave_buffer");
 	}
 	return 0;
