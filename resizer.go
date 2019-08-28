@@ -93,6 +93,12 @@ func resizer(buf []byte, o Options) ([]byte, error) {
 		residual = float64(shrink) / factor
 	}
 
+	// Apply inverse gamma correction before image processing, if necessary
+	image, err = transformLinearNonLinear(image, o, 0.454545)
+	if err != nil {
+		return nil, err
+	}
+
 	// Zoom image, if necessary
 	image, err = zoomImage(image, o.Zoom)
 	if err != nil {
@@ -157,6 +163,12 @@ func resizer(buf []byte, o Options) ([]byte, error) {
 		return nil, err
 	}
 
+	// Apply gamma correction after image processing, if necessary
+	image, err = transformLinearNonLinear(image, o, 2.2)
+	if err != nil {
+		return nil, err
+	}
+
 	return saveImage(image, o)
 }
 
@@ -178,7 +190,7 @@ func loadSpecificImage(buf []byte, o Options) (*C.VipsImage, ImageType, error) {
 		return nil, JPEG, errors.New("Image buffer is empty")
 	}
 
-	image, imageType, err := vipsReadSpecificImage(buf, o.PageNumber - 1)
+	image, imageType, err := vipsReadSpecificImage(buf, o.PageNumber-1)
 	if err != nil {
 		return nil, JPEG, err
 	}
@@ -566,29 +578,29 @@ func calculateRotationAndFlip(image *C.VipsImage, angle Angle) (Angle, bool) {
 
 	switch vipsExifOrientation(image) {
 	case 6:
-		rotate = D90
+		rotate = D270
 		break
 	case 3:
 		rotate = D180
 		break
 	case 8:
-		rotate = D270
+		rotate = D90
 		break
 	case 2:
 		flip = true
-		break // flip 1
-	case 7:
-		flip = true
-		rotate = D270
-		break // flip 6
-	case 4:
-		flip = true
 		rotate = D180
 		break // flip 3
-	case 5:
+	case 7:
 		flip = true
 		rotate = D90
 		break // flip 8
+	case 4:
+		flip = true
+		break // flip 1
+	case 5:
+		flip = true
+		rotate = D270
+		break // flip 6
 	}
 
 	return rotate, flip
@@ -621,6 +633,17 @@ func getAngle(angle Angle) Angle {
 	return Angle(math.Min(float64(angle), 270))
 }
 
+func transformLinearNonLinear(image *C.VipsImage, o Options, v float64) (*C.VipsImage, error) {
+	var err error
+	if o.GammaCorrection {
+		image, err = vipsGamma(image, v)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return image, nil
+}
+
 func applyGamma(image *C.VipsImage, o Options) (*C.VipsImage, error) {
 	var err error
 	if o.Gamma > 0 {
@@ -635,7 +658,6 @@ func applyGamma(image *C.VipsImage, o Options) (*C.VipsImage, error) {
 func applyAutoLevel(image *C.VipsImage, o Options) (*C.VipsImage, error) {
 	var err error
 	if o.AutoLevel {
-		fmt.Println("applyAutoLevel")
 		image, err = vipsAutoLevel(image)
 		if err != nil {
 			return nil, err
