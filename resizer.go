@@ -192,7 +192,7 @@ func loadSpecificImage(buf []byte, o Options) (*C.VipsImage, ImageType, error) {
 		return nil, JPEG, errors.New("Image buffer is empty")
 	}
 
-	image, imageType, err := vipsReadSpecificImage(buf, o.PageNumber - 1)
+	image, imageType, err := vipsReadSpecificImage(buf, o.PageNumber-1)
 	if err != nil {
 		return nil, JPEG, err
 	}
@@ -601,19 +601,19 @@ func calculateRotationAndFlip(image *C.VipsImage, angle Angle) (Angle, bool) {
 		break
 	case 2:
 		flip = true
-		break // flip 1
+		rotate = D180
+		break // flip 3
 	case 7:
 		flip = true
 		rotate = D270
-		break // flip 6
+		break // flip 8
 	case 4:
 		flip = true
-		rotate = D180
-		break // flip 3
+		break // flip 1
 	case 5:
 		flip = true
 		rotate = D90
-		break // flip 8
+		break // flip 6
 	}
 
 	return rotate, flip
