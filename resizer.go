@@ -634,7 +634,7 @@ func getAngle(angle Angle) Angle {
 	return Angle(math.Min(float64(angle), 270))
 }
 
-func transformLinearNonLinear(image *C.VipsImage, o Options, v int) (*C.VipsImage, error) {
+func transformLinearNonLinear(image *C.VipsImage, o Options, v float64) (*C.VipsImage, error) {
 	var err error
 	if o.GammaCorrection {
 		image, err = vipsGamma(image, v)
