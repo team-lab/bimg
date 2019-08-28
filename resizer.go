@@ -21,7 +21,6 @@ var (
 // resizer is used to transform a given image as byte buffer
 // with the passed options.
 func resizer(buf []byte, o Options) ([]byte, error) {
-	fmt.Println("Process関数が呼ばれました。")
 	defer C.vips_thread_shutdown()
 
 	var image *C.VipsImage
