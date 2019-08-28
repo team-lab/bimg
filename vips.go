@@ -186,6 +186,9 @@ func VipsIsTypeSupported(t ImageType) bool {
 	if t == MAGICK {
 		return int(C.vips_type_find_bridge(C.MAGICK)) != 0
 	}
+	if t == JP2 {
+		return int(C.vips_type_find_bridge(C.JP2)) != 0
+	}
 	return false
 }
 
@@ -204,6 +207,9 @@ func VipsIsTypeSupportedSave(t ImageType) bool {
 	}
 	if t == TIFF {
 		return int(C.vips_type_find_save_bridge(C.TIFF)) != 0
+	}
+	if t == JP2 {
+		return int(C.vips_type_find_save_bridge(C.JP2)) != 0
 	}
 	return false
 }
@@ -454,6 +460,8 @@ func vipsSave(image *C.VipsImage, o vipsSaveOptions) ([]byte, error) {
 		saveErr = C.vips_tiffsave_bridge(tmpImage, &ptr, &length)
 	case GIF:
 		saveErr = C.vips_gifsave_bridge(tmpImage, &ptr, &length)
+	case JP2:
+		saveErr = C.vips_jp2save_bridge(tmpImage, &ptr, &length)
 	default:
 		saveErr = C.vips_jpegsave_bridge(tmpImage, &ptr, &length, strip, quality, interlace)
 	}
@@ -656,6 +664,13 @@ func vipsImageType(buf []byte) ImageType {
 	}
 	if IsTypeSupported(MAGICK) && strings.HasSuffix(readImageType(buf), "MagickBuffer") {
 		return MAGICK
+	}
+	if IsTypeSupported(JP2) &&
+		buf[0] == 0x00 && buf[1] == 0x00 && buf[2] == 0x00 && buf[3] == 0x0C &&
+		buf[4] == 0x6A && buf[5] == 0x50 && buf[6] == 0x20 && buf[7] == 0x20 &&
+		buf[8] == 0x0D && buf[9] == 0x0A && buf[10] == 0x87 && buf[11] == 0x0A &&
+		buf[20] == 0x6A && buf[21] == 0x70 && buf[22] == 0x32 && buf[23] == 0x20 {
+		return JP2
 	}
 
 	return UNKNOWN

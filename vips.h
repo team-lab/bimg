@@ -34,7 +34,8 @@ enum types {
 	GIF,
 	PDF,
 	SVG,
-	MAGICK
+	MAGICK,
+	JP2,
 };
 
 typedef struct {
@@ -158,6 +159,9 @@ vips_type_find_bridge(int t) {
 	if (t == MAGICK) {
 		return vips_type_find("VipsOperation", "magickload");
 	}
+	if (t == JP2) {
+		return vips_type_find("VipsOperation", "magickload");
+	}
 	return 0;
 }
 
@@ -174,6 +178,9 @@ vips_type_find_save_bridge(int t) {
 	}
 	if (t == JPEG) {
 		return vips_type_find("VipsOperation", "jpegsave_buffer");
+	}
+	if (t == JP2) {
+		return vips_type_find("VipsOperation", "magicksave_buffer");
 	}
 	return 0;
 }
@@ -336,6 +343,20 @@ vips_tiffsave_bridge(VipsImage *in, void **buf, size_t *len) {
 }
 
 int
+vips_jp2save_bridge(VipsImage *in, void **buf, size_t *len)
+{
+  #if (VIPS_MAJOR_VERSION >= 8 && VIPS_MINOR_VERSION >= 8)
+    return vips_magicksave_buffer(in, buf, len, 
+		"quality", 43,
+		"format", "jp2",
+		NULL
+	);
+  #else
+    return 0;
+  #endif
+}
+
+int
 vips_is_16bit (VipsInterpretation interpretation) {
 	return interpretation == VIPS_INTERPRETATION_RGB16 || interpretation == VIPS_INTERPRETATION_GREY16;
 }
@@ -381,6 +402,8 @@ vips_init_image (void *buf, size_t len, int imageType, VipsImage **out) {
 #endif
 	} else if (imageType == MAGICK) {
 		code = vips_magickload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
+	} else if (imageType == JP2) {
+		code = vips_magickload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
 #endif
 	}
 
@@ -409,6 +432,8 @@ vips_init_specific_image (void *buf, size_t len, int num, int imageType, VipsIma
 		code = vips_svgload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
 #endif
 	} else if (imageType == MAGICK) {
+		code = vips_magickload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
+	} else if (imageType == JP2) {
 		code = vips_magickload_buffer(buf, len, out, "access", VIPS_ACCESS_RANDOM, NULL);
 #endif
 	}
