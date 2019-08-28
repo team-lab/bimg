@@ -591,13 +591,13 @@ func calculateRotationAndFlip(image *C.VipsImage, angle Angle) (Angle, bool) {
 
 	switch vipsExifOrientation(image) {
 	case 6:
-		rotate = D90
+		rotate = D270
 		break
 	case 3:
 		rotate = D180
 		break
 	case 8:
-		rotate = D270
+		rotate = D90
 		break
 	case 2:
 		flip = true
@@ -605,14 +605,14 @@ func calculateRotationAndFlip(image *C.VipsImage, angle Angle) (Angle, bool) {
 		break // flip 3
 	case 7:
 		flip = true
-		rotate = D270
+		rotate = D90
 		break // flip 8
 	case 4:
 		flip = true
 		break // flip 1
 	case 5:
 		flip = true
-		rotate = D90
+		rotate = D270
 		break // flip 6
 	}
 
