@@ -29,6 +29,27 @@ func TestVipsRead(t *testing.T) {
 	}
 }
 
+func TestVipsReadSpecific(t *testing.T) {
+	files := []struct {
+		name     string
+		expected ImageType
+	}{
+		{"test.gif", GIF},
+		{"test.webp", WEBP},
+	}
+	PageNumber := 3
+
+	for _, file := range files {
+		image, imageType, _ := vipsReadSpecificImage(readImage(file.name), PageNumber)
+		if image == nil {
+			t.Fatal("Empty image")
+		}
+		if imageType != file.expected {
+			t.Fatal("Invalid image type")
+		}
+	}
+}
+
 func TestVipsSave(t *testing.T) {
 	types := [...]ImageType{JPEG, PNG, WEBP}
 
