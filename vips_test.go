@@ -47,6 +47,18 @@ func TestVipsReadSpecific(t *testing.T) {
 		if imageType != file.expected {
 			t.Fatal("Invalid image type")
 		}
+
+		options := vipsSaveOptions{Type: imageType}
+
+		buf, err := vipsSave(image, options)
+		if err != nil {
+			t.Fatalf("Cannot save the image as '%v'", ImageTypes[imageType])
+		}
+		if len(buf) == 0 {
+			t.Fatalf("Empty saved '%v' image", ImageTypes[imageType])
+		}
+
+		Write("testdata/testVipsReadSpecific."+ImageTypes[imageType], buf)
 	}
 }
 
