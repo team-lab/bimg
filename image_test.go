@@ -56,6 +56,50 @@ func TestImageGifToJpeg(t *testing.T) {
 	}
 }
 
+func TestImageGifToWebp(t *testing.T) {
+	buf, err := Read("testdata/test.gif")
+	if err != nil {
+		t.Errorf("Cannot read the image: %#v", err)
+	}
+
+	pageNum, err := NewImage(buf).Npages()
+	if err != nil {
+		t.Errorf("Cannot get the number of image: %#v", err)
+	}
+
+	var oBuffer []byte
+	for i := 1; i <= pageNum; i++ {
+		options := Options{
+			Type:       WEBP,
+			PageNumber: i,
+			Width:      681,
+		}
+		buf, err := NewImage(buf).Process(options)
+		if err != nil {
+			t.Errorf("Cannot process the image: %#v", err)
+		}
+
+		if i == 1 {
+			oBuffer = buf
+		} else {
+			oBuffer, err = NewImage(oBuffer).JoinImages(NewImage(buf))
+			if err != nil {
+				t.Errorf("Cannot join the two images: %#v", err)
+			}
+		}
+
+		if pageNum != 1 && i == pageNum {
+			h, err := NewImage(buf).GetPageHeight()
+			if err != nil {
+				t.Errorf("Cannot get the image height: %#v", err)
+			}
+			oBuffer = NewImage(oBuffer).SetImageHeight(h)
+		}
+	}
+
+	Write("testdata/test_animated_image_out.webp", oBuffer)
+}
+
 func TestImagePdfToJpeg(t *testing.T) {
 	if VipsMajorVersion >= 8 && VipsMinorVersion > 2 {
 		i := initImage("test.pdf")

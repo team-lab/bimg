@@ -35,7 +35,7 @@ func TestVipsReadSpecific(t *testing.T) {
 		expected ImageType
 	}{
 		{"test.gif", GIF},
-		{"test.webp", WEBP},
+		{"test_animated_image_out.webp", WEBP},
 	}
 	PageNumber := 3
 
