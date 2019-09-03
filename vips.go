@@ -693,6 +693,12 @@ func vipsImageType(buf []byte) ImageType {
 		buf[20] == 0x6A && buf[21] == 0x70 && buf[22] == 0x32 && buf[23] == 0x20 {
 		return JP2
 	}
+	if IsTypeSupported(SVG) && IsSVGImage(buf) {
+		return SVG
+	}
+	if IsTypeSupported(MAGICK) && strings.HasSuffix(readImageType(buf), "MagickBuffer") {
+		return MAGICK
+	}
 
 	return UNKNOWN
 }
