@@ -328,7 +328,7 @@ func extractOrEmbedImage(image *C.VipsImage, o Options) (*C.VipsImage, error) {
 		image, err = vipsExtract(image, left, top, width, height)
 		break
 	case o.Embed:
-		left, top := (o.Width-inWidth)/2, (o.Height-inHeight)/2
+		left, top := calculateCrop(o.Width, o.Height, inWidth, inHeight, o.Gravity)
 		image, err = vipsEmbed(image, left, top, o.Width, o.Height, o.Extend, o.Background)
 		break
 	case o.Trim:
@@ -558,23 +558,23 @@ func roundFloat(f float64) int {
 	return int(math.Floor(f + 0.5))
 }
 
-func calculateCrop(inWidth, inHeight, outWidth, outHeight int, gravity Gravity) (int, int) {
+func calculateCrop(innerWidth, innerHeight, outerWidth, outerHeight int, gravity Gravity) (int, int) {
 	left, top := 0, 0
 
 	switch gravity {
 	case GravityNorth:
-		left = (inWidth - outWidth + 1) / 2
+		left = (innerWidth - outerWidth + 1) / 2
 	case GravityEast:
-		left = inWidth - outWidth
-		top = (inHeight - outHeight + 1) / 2
+		left = innerWidth - outerWidth
+		top = (innerHeight - outerHeight + 1) / 2
 	case GravitySouth:
-		left = (inWidth - outWidth + 1) / 2
-		top = inHeight - outHeight
+		left = (innerWidth - outerWidth + 1) / 2
+		top = innerHeight - outerHeight
 	case GravityWest:
-		top = (inHeight - outHeight + 1) / 2
+		top = (innerHeight - outerHeight + 1) / 2
 	default:
-		left = (inWidth - outWidth + 1) / 2
-		top = (inHeight - outHeight + 1) / 2
+		left = (innerWidth - outerWidth + 1) / 2
+		top = (innerHeight - outerHeight + 1) / 2
 	}
 
 	return left, top
