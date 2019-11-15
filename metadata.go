@@ -117,3 +117,18 @@ func SetImageHeight(buf []byte, h int) []byte {
 
 	return buffer
 }
+
+func GetDelay(buf []byte) ([]int, error) {
+	image, _, err := loadImage(buf)
+	if err != nil {
+		return nil, err
+	}
+	defer C.g_object_unref(C.gpointer(image))
+
+	name := C.CString("delay")
+	out := make([]int, 0)
+
+	C.vips_image_get_array_int(image, name, out)
+
+	return out, nil
+}
